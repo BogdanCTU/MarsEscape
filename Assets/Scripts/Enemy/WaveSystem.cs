@@ -96,7 +96,7 @@ public class WaveSystem : MonoBehaviour
     {
         yield return _spawnRate;
 
-        if (currentEnemiesCount < enemyMaxCount && enemySpawnCount < enemyToSpawn && gameObject.activeInHierarchy == true)
+        if ((currentEnemiesCount < enemyMaxCount) && (enemySpawnCount < enemyToSpawn) && (gameObject.activeInHierarchy))
         {
             _enemySpawner.SpawnEnemy();
             enemySpawnCount++;

@@ -10,6 +10,7 @@ TagManager:
   - LifeRegen_PowerUp
   - LifeBoost_PowerUp
   - Speed_PowerUp
+  - Player_Projectile_1
   layers:
   - Default
   - TransparentFX

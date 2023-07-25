@@ -1,3 +1,5 @@
+using OpenCover.Framework.Model;
+using System.Collections;
 using UnityEngine;
 
 public class ProjectilePlayer : MonoBehaviour
@@ -5,9 +7,9 @@ public class ProjectilePlayer : MonoBehaviour
 
     #region Fields
 
-    public int damageAmount = 50;
-    public float speed = 10f;
-    public float lifetime = 2f; // Adjust this to control how long the projectile stays before being destroyed.
+    [SerializeField] private int _damageAmount = 50;
+    [SerializeField] private int _speed = 2;
+    [SerializeField] private WaitForSeconds _lifetime = new WaitForSeconds(10);
 
     #endregion Fields
 
@@ -15,12 +17,12 @@ public class ProjectilePlayer : MonoBehaviour
 
     void Start()
     {
-        Destroy(gameObject, lifetime);
+        StartCoroutine(DeactivateGameObject());
     }
 
     void FixedUpdate()
     {
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        transform.Translate(Vector3.forward * _speed * Time.deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -29,19 +31,57 @@ public class ProjectilePlayer : MonoBehaviour
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.TakeDamage(damageAmount + PlayerController.instance.damage); // Call the TakeDamage function on the enemy script.
+            enemy.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the enemy script.
         }
 
         Obstacle obstacle = other.GetComponent<Obstacle>();
         if (obstacle != null)
         {
-            obstacle.TakeDamage(damageAmount + PlayerController.instance.damage); // Call the TakeDamage function on the object script.
+            obstacle.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the object script.
         }
 
+        StopAllCoroutines();
+
         // Destroy the projectile when it collides with any object.
-        Destroy(gameObject);
+        gameObject.SetActive(false);
     }
 
     #endregion Mono
+
+    #region Methods
+
+    private IEnumerator DeactivateGameObject()
+    {
+        yield return _lifetime;
+
+        if (gameObject.activeInHierarchy)
+            gameObject.SetActive(false);
+    }
+
+    #region Getters/Setters
+
+    public void SetDamageAmount(int damage)
+    {
+        _damageAmount = damage;
+    }
+
+    public int GetDamageAmount()
+    {
+        return _damageAmount;
+    }
+
+    public void SetSpeed(int speed)
+    {
+        _speed = speed;
+    }
+
+    public int GetSpeed()
+    {
+        return _speed;
+    }
+
+    #endregion Getters/Setters
+
+    #endregion Methods
 
 }

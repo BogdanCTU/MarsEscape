@@ -1,21 +1,29 @@
 using UnityEngine;
 
+/// <summary>
+/// Auth : Bob
+/// A simple script that controls player movement
+/// </summary>
+
 public class PlayerMovement : MonoBehaviour
 {
 
     #region Fields
 
-    private float _moveSpeed;
-    private float _rotationSpeed;
-    private Rigidbody _rigidbody;
-    public ParticleSystem _engineParticles;
+    [Header("Player Stats:")]
+    [SerializeField] private float _moveSpeed;
+    [SerializeField] float _rotationSpeed;
 
-    Vector3 movement = Vector3.zero;
+    [Space]
+    [Header("Player Components:")]
+    [SerializeField] Rigidbody _rigidbody;
+    [SerializeField] ParticleSystem _engineParticles;
+
+    // Movement Variables
+    private Vector3 movement = Vector3.zero;
     private Vector3 moveDirection = Vector3.zero;
     private Quaternion targetRotation;
-
-    // Tmp values
-    float zMovement, xMovement;
+    private float zMovement, xMovement;
 
     #endregion Fields
 
@@ -23,11 +31,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
-        // Getting Stats
-        _moveSpeed = PlayerController.instance.moveSpeed;
-        _rotationSpeed = PlayerController.instance.rotationSpeed;
-        _rigidbody = PlayerController.instance.playerRigidbody;
-
         // Disable rotation from physics forces
         _rigidbody.freezeRotation = true;
     }
@@ -36,6 +39,10 @@ public class PlayerMovement : MonoBehaviour
     {
         PlayerMove();
     }
+
+    #endregion Mono
+
+    #region Methods
 
     private void PlayerMove()
     {
@@ -54,19 +61,17 @@ public class PlayerMovement : MonoBehaviour
         {
             targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
-            if(!_engineParticles.isPlaying) _engineParticles.Play();
+            if (!_engineParticles.isPlaying) _engineParticles.Play();
         }
-        else
-            if (_engineParticles.isPlaying) _engineParticles.Stop();
+        else if (_engineParticles.isPlaying)
+            _engineParticles.Stop();
 
         // Move the player based on the calculated direction and the move speed.
         movement = moveDirection * _moveSpeed * Time.deltaTime;
         _rigidbody.velocity = new Vector3(movement.x, _rigidbody.velocity.y, movement.z);
     }
 
-    #endregion Mono
-
-    #region Methods
+    #region Getters/Setters
 
     public void SetMovementSpeed(float speed)
     {
@@ -97,6 +102,8 @@ public class PlayerMovement : MonoBehaviour
     {
         return _rotationSpeed;
     }
+
+    #endregion Getters/Setters
 
     #endregion Methods
 

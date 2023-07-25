@@ -1,8 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(Rigidbody))]
+/// <summary>
+/// Auth : Bob
+/// A simple script that controls player stats
+/// </summary>
+
+[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(PlayerShooting))]
 public class PlayerController : MonoBehaviour
 {
 
@@ -10,28 +13,16 @@ public class PlayerController : MonoBehaviour
 
     public static PlayerController instance;
 
-    public PlayerMovement playerMovement;
+    [Space]
+    [Header("Required Components:")]
+    [SerializeField] private PlayerMovement _playerMovement;
+    [SerializeField] private PlayerShooting _plyerShooting;
 
     [Space]
-    [Header("PlayerStats:")]
-    public Rigidbody playerRigidbody;
-    public float moveSpeed = 2f;
-    public float rotationSpeed = 150f;
+    [Header("Player Stats:")]
     public int damage = 0;
-    public int life = 0;
+    public int life = 100;
     public int maxLife = 100;
-
-    [Space]
-    [Header("Projectiles:")]
-    public int currentProjectile;
-    public List<GameObject> projectiles;
-    public Transform projectilesSpawnPos;
-    public Transform projectilesSpawnHolder;
-    public Transform projectilesContainerTransform;
-    public float shootCooldown = 0.5f; // Adjust this value to control the shooting cooldown.
-    public bool _canShoot = true;
-
-    private Camera mainCamera;
 
     #endregion Fields
 
@@ -41,70 +32,13 @@ public class PlayerController : MonoBehaviour
     {
         if (instance == null)
             instance = this;
-
-        life = maxLife;
-
-        mainCamera = Camera.main;
-
-        if (mainCamera == null)
-            mainCamera = FindFirstObjectByType<Camera>();
-    }
-
-    void FixedUpdate()
-    {
-        RotateProjectileHolder();
-
-        // Shooting projectile on spacebar press and when cooldown is over.
-        if (Input.GetKeyDown(KeyCode.Mouse0) && _canShoot == true)
-        {
-            ShootProjectile();
-
-            _canShoot = false;
-            Invoke(nameof(ResetShootCooldown), shootCooldown);
-        }
     }
 
     #endregion Mono
 
     #region Methods
 
-    void ShootProjectile()
-    {
-        SoundManager.instance.LaserSound();
-
-        // Instantiate the projectile at the player's position and rotation.
-        GameObject newProjectile = Instantiate(projectiles[currentProjectile], projectilesSpawnPos.position, projectilesSpawnPos.rotation, projectilesContainerTransform);
-
-        // Set the projectile's initial velocity in the direction the spawner is looking (towards the mouse).
-        ProjectilePlayer projectile = newProjectile.GetComponent<ProjectilePlayer>();
-        newProjectile.GetComponent<Rigidbody>().velocity = projectilesSpawnPos.forward * projectile.speed;
-    }
-
-    void RotateProjectileHolder()
-    {
-        // Get the mouse position in screen space.
-        Vector3 mousePosition = Input.mousePosition;
-
-        // Convert the mouse position to world space.
-        mousePosition = mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, mainCamera.transform.position.y));
-
-        // Calculate the direction from the player to the mouse position.
-        Vector3 directionToMouse = mousePosition - transform.position;
-        directionToMouse.y = 0f; // Keep the rotation in the XZ plane.
-
-        // Calculate the rotation angle around the y-axis.
-        float angle = Mathf.Atan2(directionToMouse.x, directionToMouse.z) * Mathf.Rad2Deg;
-
-        // Rotate the projectile spawner around the y-axis to look at the mouse position.
-        projectilesSpawnHolder.rotation = Quaternion.Euler(0f, angle, 0f);
-    }
-
-    #region Setters
-
-    private void ResetShootCooldown()
-    {
-        _canShoot = true;
-    }
+    #region PowerUps
 
     public void DamagePlayer(int damage)
     {
@@ -125,15 +59,12 @@ public class PlayerController : MonoBehaviour
     {
         damage += increase;
 
-        int projectileDamage = projectiles[currentProjectile].GetComponent<ProjectilePlayer>().damageAmount;
-
-        // Refresh UI
-        UIContainer.Instance.playerDamageText.text = "Damage: " + (damage + projectileDamage);
+        UIContainer.Instance.playerDamageText.text = "Damage: " + (damage);
     }
 
     public void SpeedBoost(int increase)
     {
-        playerMovement.SetMovementSpeed(playerMovement.GetMovementSpeed() + increase);
+        _playerMovement.SetMovementSpeed(_playerMovement.GetMovementSpeed() + increase);
     }
 
     public void LifeBoost(int increase)
@@ -154,7 +85,7 @@ public class PlayerController : MonoBehaviour
         UIContainer.Instance.playerHealthText.text = "Health: " + life + "/" + maxLife;
     }
 
-    #endregion Setters
+    #endregion PowerUps
 
     private void ShowEndScreen()
     {

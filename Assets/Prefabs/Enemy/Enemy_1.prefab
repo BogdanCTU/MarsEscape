@@ -418,7 +418,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 766899729229393950, guid: d40859fbd82286248bc5a970e6e1a53f, type: 3}
   projectileSpawnPoint: {fileID: 1557813561364357198}
   projectileSpawnHolder: {fileID: 3400064880249035098}
-  shootingRadius: 5
+  shootingRadius: 6
   shootingCooldown: 2
   canShoot: 1
 --- !u!195 &8350518055234694481

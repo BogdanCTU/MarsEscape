@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7340578106927182716}
   - component: {fileID: 5159126280066613080}
   - component: {fileID: 8706358353486231641}
+  - component: {fileID: 5194800043461196361}
   - component: {fileID: 9023395566897397672}
   - component: {fileID: 8897666233542782986}
   - component: {fileID: 5302801897270539874}
@@ -42,6 +43,7 @@ Transform:
   - {fileID: 8629945235688931256}
   - {fileID: 1471401439625437508}
   - {fileID: 6960858758676389524}
+  - {fileID: 1997346162395576258}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -57,21 +59,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a97e71a14f4984a8d55f983365a452, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMovement: {fileID: 8706358353486231641}
-  playerRigidbody: {fileID: 5937253672808354729}
-  moveSpeed: 100
-  rotationSpeed: 200
+  _playerMovement: {fileID: 8706358353486231641}
+  _plyerShooting: {fileID: 5194800043461196361}
   damage: 0
-  life: 0
+  life: 100
   maxLife: 100
-  currentProjectile: 0
-  projectiles:
-  - {fileID: 766899729229393950, guid: d03bab7cebed24a438e90fd1b5735b6f, type: 3}
-  projectilesSpawnPos: {fileID: 5728575806482075477}
-  projectilesSpawnHolder: {fileID: 1450064948266739848}
-  projectilesContainerTransform: {fileID: 0}
-  shootCooldown: 0.2
-  _canShoot: 1
 --- !u!114 &8706358353486231641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,7 +76,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9319ea33eaad97748bce1ee7391b32a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _moveSpeed: 100
+  _rotationSpeed: 200
+  _rigidbody: {fileID: 5937253672808354729}
   _engineParticles: {fileID: 8392343732077146528}
+--- !u!114 &5194800043461196361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 299656137094880055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ff616d9769868143803a21c992926f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentProjectile: 0
+  _projectilesSpawnPos: {fileID: 5728575806482075477}
+  _projectilesSpawnHolder: {fileID: 1450064948266739848}
+  _shootCooldown: 0.5
+  _canShoot: 1
+  _objectPoolingMultiple: {fileID: 2828866546029781742}
 --- !u!114 &9023395566897397672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -131,7 +144,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyPool: {fileID: 122435369988348701}
-  _spawnRadius: 10
+  _minSpawnRadius: 10
+  _maxSpawnRadius: 12
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -148,9 +162,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _objectPoolingMultiple: {fileID: 9118769237799477975}
-  _spawnRadius: 10
+  _spawnRadius: 7
   _minCollectibleSpawnRate: 1
-  _maxCollectibleSpawnRate: 4
+  _maxCollectibleSpawnRate: 3
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -525,7 +539,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1450064948266739848}
   m_Layer: 6
-  m_Name: Spawn_Pos_Holder
+  m_Name: Projectile_Spawn_Holder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -699,6 +713,57 @@ MonoBehaviour:
   _amountToPool: 10
   _shouldExpand: 1
   _pooledObjectsParentTransform: {fileID: 0}
+--- !u!1 &8194346944498170542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1997346162395576258}
+  - component: {fileID: 2828866546029781742}
+  m_Layer: 6
+  m_Name: ProjectilePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1997346162395576258
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8194346944498170542}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7340578106927182716}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2828866546029781742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8194346944498170542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d79bb0f9cb939c04699dbc973df0c8f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pooledObjects: []
+  _itemsToPool:
+  - amountToPool: 10
+    objectToPool: {fileID: 766899729229393950, guid: d03bab7cebed24a438e90fd1b5735b6f, type: 3}
+    objectTag: Player_Projectile_1
+    shouldExpand: 1
+  _pooledObjectsContainerTransform: {fileID: 0}
 --- !u!1001 &721699017598105222
 PrefabInstance:
   m_ObjectHideFlags: 0

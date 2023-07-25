@@ -81,6 +81,17 @@ public class ObjectPooling : MonoBehaviour
         return gameObject;
     }
 
+    public void ActivateObjectOnPosition(Vector3 spawnPosition)
+    {
+        GameObject gameObject = GetPooledObject();
+       
+        if (gameObject == null)
+            return;
+
+        gameObject.transform.position = spawnPosition;
+        gameObject.SetActive(true);
+    }
+
     #region Getters/Setters
 
     public void SetObjectToPool(GameObject objectToPool) { _objectToPool = objectToPool; }

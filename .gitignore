@@ -73,3 +73,7 @@ crashlytics-build.properties
 obj
 Temp/UnityLockfile
 Library
+Logs
+Temp
+UserSettings
+*.csproj
