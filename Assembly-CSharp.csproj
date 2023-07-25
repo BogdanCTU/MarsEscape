@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{18DBFB14-B643-B2E5-3DCC-A4FD03CC65FF}</ProjectGuid>
+    <ProjectGuid>{DCD8E180-BFF2-AD23-BE90-0ACB5D8FA0C2}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Player\CameraMovement.cs" />
     <Compile Include="Assets\Scripts\Sound\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\ObjectPooling\ObjectPoolingMultiple.cs" />
     <Compile Include="Assets\Scripts\Player\ProjectilePlayer.cs" />
     <Compile Include="Assets\Scripts\Enemy\Enemy.cs" />
     <Compile Include="Assets\Scripts\Sound\MainMenuSoundManager.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="Assets\Scripts\UI\UIContainer.cs" />
     <Compile Include="Assets\Scripts\Enviroment\Obstacle.cs" />
     <Compile Include="Assets\Scripts\UI\QuitButton.cs" />
+    <Compile Include="Assets\Scripts\ObjectPooling\ObjectPooling.cs" />
     <Compile Include="Assets\Scripts\Scenes\KenneyRedirect.cs" />
     <Compile Include="Assets\Scripts\Scenes\ChangeScene.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
