@@ -1,64 +1,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Auth: Bob
+/// An enemy spawner script based on "Object Pooling" pattern
+/// </summary>
+
 public class EnemySpawner : MonoBehaviour
 {
 
     #region Fields
 
-    [Space]
-    [Header("Enemy Spawn Stats:")]
-    public List<GameObject> enemyPrefabs;
-    public float spawnRadius = 10f;
-    public float spawnRate = 2f;
-    public int enemyHealthBoost = 50;
-    public int enemyDamageBoost = 20;
-
+    [SerializeField] private ObjectPooling _enemyPool;
 
     [Space]
-    public LayerMask obstacleLayer;
+    [Header("Object Pooling:")]
+    [SerializeField] private float _spawnRadius = 10f;
 
     [Space]
-    [Header("Enemy Spawn Stats:")]
-    public Transform enemyContainerTransform;
+    [SerializeField] private LayerMask _obstacleLayer;
+
+    // TODO
+    //private WaveSystem waveSystem = WaveSystem.instance;
 
     #endregion Fields
 
     #region Methods
 
-    public void SpawnEnemy(int currentWaveIndex)
+    public void SpawnEnemy()
     {
         // Randomly generate a position around the player within the spawnRadius.
-        Vector2 randomCircle = Random.insideUnitCircle.normalized * spawnRadius;
+        Vector2 randomCircle = Random.insideUnitCircle.normalized * _spawnRadius;
         Vector3 spawnPosition = new Vector3(randomCircle.x, 0f, randomCircle.y) + transform.position;
 
         // Check if the spawn position is valid (not inside an obstacle).
         if (!IsObstacleBlocking(spawnPosition))
         {
-            GameObject newEnemy = Instantiate(enemyPrefabs[0], spawnPosition, Quaternion.identity, enemyContainerTransform);
-            Enemy enemy = newEnemy.GetComponent<Enemy>();
-
-            currentWaveIndex--;
-
-            // Setting enemy stats
-            enemy.maxHealth = enemy.maxHealth + (enemyHealthBoost * currentWaveIndex);
-            enemy.currentHealth = enemy.maxHealth;
-            enemy.damage = enemy.damage + (enemyDamageBoost * currentWaveIndex);
+            GameObject newEnemy = _enemyPool.ActivateAndGetObject();
+            newEnemy.transform.position = spawnPosition;
         }
     }
 
-    bool IsObstacleBlocking(Vector3 position)
+    private bool IsObstacleBlocking(Vector3 position)
     {
         // Raycast downward from the position to check for obstacles.
         Ray ray = new Ray(position + Vector3.up * 2f, Vector3.down);
-        RaycastHit hit;
-        float raycastDistance = 1f; // Adjust this value based on your level design.
 
-        if (Physics.Raycast(ray, out hit, raycastDistance, obstacleLayer))
-        {
-            // If an obstacle is found, return true.
+        // If an obstacle is found, return true.
+        if (Physics.Raycast(ray, 1f, _obstacleLayer))
             return true;
-        }
+        
         return false;
     }
 

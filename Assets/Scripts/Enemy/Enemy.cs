@@ -8,10 +8,21 @@ public class Enemy : MonoBehaviour
 
     [Space]
     [Header("Enemy Stats:")]
-    public int maxHealth = 100;
-    public int damage = 10;
-    public float currentHealth;
+    [SerializeField] private float currentHealth;
+    [SerializeField] private int maxHealth = 100;
+    [SerializeField] private int damage = 10;
+    
+    [Space]
+    [Header("Enemy Bonus Stats:")]
+    [SerializeField] private int _enemyHealthBoost = 50;
+    [SerializeField] private int _enemyDamageBoost = 20;
+
+    [Space]
+    [Header("Enemy AI:")]
     [SerializeField] private NavMeshAgent navMeshAgent;
+
+    [Space]
+    [Header("Enemy PS:")]
     [SerializeField] private GameObject explosionPS;
 
     [Space]
@@ -29,19 +40,55 @@ public class Enemy : MonoBehaviour
     [SerializeField] private bool canShoot = true;
 
     private Transform player;
-    private WaveSystem waveSystem = WaveSystem.instance;
+    private WaveSystem waveSystem = null;
 
     #endregion Fields
 
     #region Mono
 
-    void Start()
+    void Awake()
     {
-        currentHealth = maxHealth;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        FindPlayer();
+    }
+
+    private void OnEnable()
+    {
+        FindPlayer();
+
+        SetEnemyStats();
     }
 
     void FixedUpdate()
+    {
+        NavmeshAI();
+    }
+
+    #endregion Mono
+
+    #region Methods
+
+    private void FindPlayer()
+    {
+        if (player == null)
+        {
+            player = GameObject.FindGameObjectWithTag("Player").transform;
+
+            if (player != null)
+                waveSystem = player.gameObject.GetComponent<WaveSystem>();
+        }
+    }
+
+    private void SetEnemyStats()
+    {
+        // Read current wave index and increase enemy stats accordingly
+        int index = waveSystem.currentWaveIndex - 1;
+
+        maxHealth = maxHealth + (_enemyHealthBoost * index);
+        currentHealth = maxHealth;
+        damage = damage + (_enemyDamageBoost * index);
+    }
+
+    private void NavmeshAI()
     {
         if (player != null)
         {
@@ -51,46 +98,12 @@ public class Enemy : MonoBehaviour
             // Check if the player is within the shooting radius and if enough time has passed since the last shot.
             if (Vector3.Distance(transform.position, player.position) <= shootingRadius && canShoot == true)
             {
+                // Shoot Projectile
                 canShoot = false;
                 Invoke(nameof(ShootCooldown), shootingCooldown);
-
                 ShootProjectile();
             }
         }
-    }
-
-    #endregion Mono
-
-    #region Methods
-
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-
-        SetHealtBar();
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    private void SetHealtBar()
-    {
-        if (!canvas.activeInHierarchy)
-            canvas.SetActive(true);
-
-        // Calculate the percentage of remaining health.
-        float healthPercentage = (float)(currentHealth / maxHealth);
-
-        // Get the original size of the health bar RectTransform.
-        Vector2 originalSize = healthRectTransform.sizeDelta;
-
-        // Calculate the new width based on the health percentage.
-        float newWidth = 100 * healthPercentage;
-
-        // Set the new size for the health bar RectTransform.
-        healthRectTransform.sizeDelta = new Vector2(newWidth, originalSize.y);
     }
 
     private void ShootProjectile()
@@ -115,22 +128,53 @@ public class Enemy : MonoBehaviour
         projectile.damageAmount = damage;
     }
 
+    public void TakeDamage(int damage)
+    {
+        currentHealth -= damage;
+
+        SetHealtBar();
+
+        if (currentHealth <= 0)
+        {
+            EnemyDie();
+        }
+    }
+
+    private void SetHealtBar()
+    {
+        if (!canvas.activeInHierarchy)
+            canvas.SetActive(true);
+
+        // Calculate the percentage of remaining health.
+        float healthPercentage = (float)(currentHealth / maxHealth);
+
+        // Get the original size of the health bar RectTransform.
+        Vector2 originalSize = healthRectTransform.sizeDelta;
+
+        // Calculate the new width based on the health percentage.
+        float newWidth = 100 * healthPercentage;
+
+        // Set the new size for the health bar RectTransform.
+        healthRectTransform.sizeDelta = new Vector2(newWidth, originalSize.y);
+    }
+
     private void ShootCooldown()
     {
         canShoot = true;
     }
 
-    void Die()
+    void EnemyDie()
     {
+        gameObject.SetActive(false);
+
+        // Explosion Animation
         SoundManager.instance.ExplosionSound();
-        Destroy(gameObject);
-        Instantiate(explosionPS, this.transform.position, this.transform.rotation);
+        Instantiate(explosionPS, transform.position, transform.rotation);
         CameraMovement.instance.ShakeCamera();
 
         waveSystem.EnemyDefeated();
     }
 
-    
     #endregion Methods
 
 }

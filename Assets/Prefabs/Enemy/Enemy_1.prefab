@@ -406,8 +406,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed5442dc5766a4646a496fae7aee6749, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentHealth: 100
   maxHealth: 100
-  currentHealth: 0
+  damage: 10
+  _enemyHealthBoost: 50
+  _enemyDamageBoost: 20
   navMeshAgent: {fileID: 8350518055234694481}
   explosionPS: {fileID: 600443118142830510, guid: c8a1b9bc8529abb4dac91d287a4d4d8f, type: 3}
   canvas: {fileID: 840260210524906296}
@@ -438,7 +441,7 @@ NavMeshAgent:
   m_AutoRepath: 1
   m_Height: 1
   m_BaseOffset: 0
-  m_WalkableMask: 4294967295
+  m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
 --- !u!1 &2820092892727687685
 GameObject:

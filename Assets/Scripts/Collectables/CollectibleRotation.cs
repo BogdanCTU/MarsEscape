@@ -5,9 +5,9 @@ public class CollectibleRotation : MonoBehaviour
 
     #region Fields
 
-    public float rotationSpeed = 100f; // Adjust this value to control the rotation speed.
-
-    public Rigidbody rigidbodyCollectible;
+    // Adjust this value to control the rotation speed.
+    [SerializeField] private float rotationSpeed = 100f;
+    [SerializeField] private Rigidbody rigidBody;
 
     #endregion Fields
 
@@ -16,7 +16,7 @@ public class CollectibleRotation : MonoBehaviour
     void FixedUpdate()
     {
         // Add a rotation force to the Rigidbody to make the coin spin on its own axis.
-        rigidbodyCollectible.AddTorque(Vector3.up * rotationSpeed * Time.fixedDeltaTime);
+        rigidBody.AddTorque(Vector3.up * rotationSpeed * Time.fixedDeltaTime);
     }
 
     #endregion Mono

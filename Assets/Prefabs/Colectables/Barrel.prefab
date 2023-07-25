@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 103873704237350153}
   m_Layer: 0
   m_Name: Barrel
-  m_TagString: Untagged
+  m_TagString: Barrel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 20
-  rigidbodyCollectible: {fileID: 6869733828555184466}
+  rigidBody: {fileID: 6869733828555184466}
 --- !u!114 &103873704237350153
 MonoBehaviour:
   m_ObjectHideFlags: 0

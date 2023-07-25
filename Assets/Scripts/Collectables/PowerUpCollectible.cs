@@ -12,28 +12,12 @@ public class PowerUpCollectible : MonoBehaviour
     [Header("3 => RegenBoost")]
 
     [Space]
-    [SerializeField] private int collectibleType = 0;
-    [SerializeField] private int boost = 0;
-
-    [Space]
-    [Header("Damage Stats:")]
-    [SerializeField] public int minDamageBoost = 10;
-    [SerializeField] public int maxDamageBoost = 50;
-
-    [Space]
-    [Header("Speed Stats:")]
-    [SerializeField] public int minSpeedBoost = 5;
-    [SerializeField] public int maxSpeedBoost = 10;
-
-    [Space]
-    [Header("Life Stats:")]
-    [SerializeField] public int minLifeBoost = 10;
-    [SerializeField] public int maxLifeBoost = 50;
-
-    [Space]
-    [Header("Regen Stats:")]
-    [SerializeField] public int minLifeRegen = 10;
-    [SerializeField] public int maxLifeRegen = 50;
+    [Header("Generic Stats:")]
+    [SerializeField] private int _collectibleType = 0;
+    [SerializeField] private int _despawnTime = 20;
+    [SerializeField] private int _boost = 0;
+    [SerializeField] public int _minBoost = 10;
+    [SerializeField] public int _maxBoost = 50;
 
     [Space]
     [Header("Text UI:")]
@@ -43,8 +27,10 @@ public class PowerUpCollectible : MonoBehaviour
 
     #region Mono
 
-    private void Awake()
+    private void OnEnable()
     {
+        Invoke(nameof(DespawnGameObject), _despawnTime);
+
         SetStats();
     }
 
@@ -56,7 +42,7 @@ public class PowerUpCollectible : MonoBehaviour
 
             SoundManager.instance.PowerUpSound();
 
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -64,40 +50,40 @@ public class PowerUpCollectible : MonoBehaviour
 
     #region Methods
 
+    private void DespawnGameObject()
+    {
+        gameObject.SetActive(false);
+    }
+
     private void SetStats()
     {
-        collectibleType = Random.Range(0, 4);
+        _boost = Random.Range(_minBoost, _maxBoost);
 
-        switch (collectibleType)
+        switch (_collectibleType)
         {
             case 0:
                 {
-                    boost = Random.Range(minDamageBoost, maxDamageBoost);
-                    collectableText.text = "Damage boost: " + boost;
+                    collectableText.text = "Damage boost: " + _boost;
                     break;
                 }
             case 1:
                 {
-                    boost = Random.Range(minSpeedBoost, maxSpeedBoost);
-                    collectableText.text = "Speed boost: " + boost;
+                    collectableText.text = "Speed boost: " + _boost;
                     break;
                 }
             case 2:
                 {
-                    boost = Random.Range(minLifeBoost, maxLifeBoost);
-                    collectableText.text = "Life boost: " + boost;
+                    collectableText.text = "Life boost: " + _boost;
                     break;
                 }
             case 3:
                 {
-                    boost = Random.Range(minLifeRegen, maxLifeRegen);
-                    collectableText.text = "Life regen: " + boost;
+                    collectableText.text = "Life regen: " + _boost;
                     break;
                 }
             default:
                 {
-                    boost = Random.Range(minDamageBoost, maxDamageBoost);
-                    collectableText.text = "Damage boost: " + boost;
+                    collectableText.text = "Damage boost: " + _boost;
                     break;
                 }
         }
@@ -105,31 +91,31 @@ public class PowerUpCollectible : MonoBehaviour
 
     private void Boost(PlayerController playerController)
     {
-        switch (collectibleType)
+        switch (_collectibleType)
         {
             case 0:
                 {
-                    playerController.DamageBoost(boost);
+                    playerController.DamageBoost(_boost);
                     break;
                 }
             case 1:
                 {
-                    playerController.SpeedBoost(boost);
+                    playerController.SpeedBoost(_boost);
                     break;
                 }
             case 2:
                 {
-                    playerController.LifeBoost(boost);
+                    playerController.LifeBoost(_boost);
                     break;
                 }
             case 3:
                 {
-                    playerController.LifeRegen(boost);
+                    playerController.LifeRegen(_boost);
                     break;
                 }
             default:
                 {
-                    playerController.DamageBoost(boost);
+                    playerController.DamageBoost(_boost);
                     break;
                 }
         }

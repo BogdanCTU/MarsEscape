@@ -1,6 +1,11 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+/// <summary>
+/// Auth: Bob
+/// An infinite enemy spawn wave system.
+/// Every wave completed the enemies become stronger based on the wave index (see Enemy script)
+/// </summary>
 
 public class WaveSystem : MonoBehaviour
 {
@@ -10,9 +15,10 @@ public class WaveSystem : MonoBehaviour
     public static WaveSystem instance;
 
     [Space]
-    [Header("Wave:")]
+    [Header("Enemy Wave:")]
     public int currentWaveIndex = 0;
-    public int countdown = 81;
+    public int countdown = 60;
+    private int _countdownBase = 60;
 
     [Space]
     [Header("Enemy Stats:")]
@@ -24,9 +30,9 @@ public class WaveSystem : MonoBehaviour
     public int enemiesDefeated = 0;
     public int enemiesTotalDefeated = 0;
 
+    [SerializeField] private WaitForSeconds _spawnRate = new WaitForSeconds(2);
+
     private EnemySpawner _enemySpawner;
-    private WaitForSeconds _second = new WaitForSeconds(1);
-    private WaitForSeconds _twoSeconds = new WaitForSeconds(2);
 
     #endregion Fields
 
@@ -36,11 +42,14 @@ public class WaveSystem : MonoBehaviour
     {
         if(instance == null)
             instance = this;
+
+        _countdownBase = countdown;
     }
 
     private void Start()
     {
         _enemySpawner = GetComponent<EnemySpawner>();
+
         StartNextWave();
     }
 
@@ -53,7 +62,7 @@ public class WaveSystem : MonoBehaviour
         StopAllCoroutines();
 
         // Start the next wave
-        countdown = 81;
+        countdown = _countdownBase;
         currentWaveIndex++;
         enemiesDefeated = 0;
         enemySpawnCount = 0;
@@ -85,11 +94,11 @@ public class WaveSystem : MonoBehaviour
 
     private IEnumerator EnemySpawnRate()
     {
-        yield return _twoSeconds;
+        yield return _spawnRate;
 
-        if (currentEnemiesCount < enemyMaxCount && enemySpawnCount < enemyToSpawn && this.gameObject.activeInHierarchy == true)
+        if (currentEnemiesCount < enemyMaxCount && enemySpawnCount < enemyToSpawn && gameObject.activeInHierarchy == true)
         {
-            _enemySpawner.SpawnEnemy(currentWaveIndex);
+            _enemySpawner.SpawnEnemy();
             enemySpawnCount++;
             currentEnemiesCount++;
         }

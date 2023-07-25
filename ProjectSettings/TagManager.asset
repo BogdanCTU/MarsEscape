@@ -5,7 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - Fog
+  - Barrel
+  - Damage_PowerUp
+  - LifeRegen_PowerUp
+  - LifeBoost_PowerUp
+  - Speed_PowerUp
   layers:
   - Default
   - TransparentFX
@@ -16,8 +20,8 @@ TagManager:
   - Player
   - Obstacle
   - Enemy
-  - Fog
-  - SecondaryFog
+  - 
+  - 
   - 
   - 
   - 

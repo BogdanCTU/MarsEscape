@@ -20,7 +20,7 @@ public class BarrelCollectible : MonoBehaviour
 
             SoundManager.instance.PowerUpSound();
 
-            Destroy(this.gameObject);
+            gameObject.SetActive(false);
         }
     }
 

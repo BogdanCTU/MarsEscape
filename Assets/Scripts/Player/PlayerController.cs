@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
 
@@ -30,14 +31,6 @@ public class PlayerController : MonoBehaviour
     public float shootCooldown = 0.5f; // Adjust this value to control the shooting cooldown.
     public bool _canShoot = true;
 
-    [Space]
-    [Header("Fog:")]
-    public Fog fog;
-    public Transform secondaryFog;
-    [Range(0, 5)]
-    public float sightDistance = 5;
-    public float checkInterval = 0.5f;
-
     private Camera mainCamera;
 
     #endregion Fields
@@ -55,12 +48,6 @@ public class PlayerController : MonoBehaviour
 
         if (mainCamera == null)
             mainCamera = FindFirstObjectByType<Camera>();
-    }
-
-    private void Start()
-    {
-        //StartCoroutine(CheckFog(checkInterval));
-        //secondaryFog.localScale = new Vector2(sightDistance, sightDistance) * 10f;
     }
 
     void FixedUpdate()
@@ -110,15 +97,6 @@ public class PlayerController : MonoBehaviour
 
         // Rotate the projectile spawner around the y-axis to look at the mouse position.
         projectilesSpawnHolder.rotation = Quaternion.Euler(0f, angle, 0f);
-    }
-
-    private IEnumerator CheckFog(float checkInterval)
-    {
-        while (true)
-        {
-            fog.MakeHole(transform.position, sightDistance);
-            yield return new WaitForSeconds(checkInterval);
-        }
     }
 
     #region Setters
