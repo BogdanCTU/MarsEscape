@@ -11,6 +11,7 @@ TagManager:
   - LifeBoost_PowerUp
   - Speed_PowerUp
   - Player_Projectile_1
+  - BlockDetectionCollider
   layers:
   - Default
   - TransparentFX

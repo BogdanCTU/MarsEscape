@@ -32,18 +32,17 @@ public class ProjectilePlayer : MonoBehaviour
         if (enemy != null)
         {
             enemy.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the enemy script.
+            StopAllCoroutines();
+            gameObject.SetActive(false);
         }
 
         Obstacle obstacle = other.GetComponent<Obstacle>();
         if (obstacle != null)
         {
             obstacle.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the object script.
+            StopAllCoroutines();
+            gameObject.SetActive(false);
         }
-
-        StopAllCoroutines();
-
-        // Destroy the projectile when it collides with any object.
-        gameObject.SetActive(false);
     }
 
     #endregion Mono
