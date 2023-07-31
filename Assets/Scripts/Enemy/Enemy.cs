@@ -132,10 +132,12 @@ public class Enemy : MonoBehaviour
     {
         currentHealth -= damage;
 
+        // UI
         SetHealtBar();
 
         if (currentHealth <= 0)
         {
+            // Disable current game object
             EnemyDie();
         }
     }

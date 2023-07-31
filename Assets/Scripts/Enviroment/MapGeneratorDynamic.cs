@@ -25,7 +25,7 @@ public class MapGeneratorDynamic : MonoBehaviour
     [SerializeField] private int _initialMapSize = 3;
     [SerializeField] private int _blockSpacing = 7;
     [SerializeField] private int _currentBlocks = 1;
-    [SerializeField] private int _maxGeneratedBlocks = 20;
+    [SerializeField] private int _maxGeneratedBlocks = 30;
 
     private Dictionary<Vector2Int, GameObject> _generatedBlocks = new Dictionary<Vector2Int, GameObject>();
     private Vector2Int _currentPlayerBlock;
@@ -108,18 +108,14 @@ public class MapGeneratorDynamic : MonoBehaviour
 
     private void CheckBlocksCount()
     {
-        _maxGeneratedBlocks++;
-        if (_maxGeneratedBlocks > _currentBlocks)
+        _currentBlocks++;
+        if (_currentBlocks > _maxGeneratedBlocks)
         {
             _currentBlocks--;
 
             KeyValuePair<Vector2Int, GameObject> firstBlock = _generatedBlocks.FirstOrDefault();
-
-            if (firstBlock.Value != null)
-            {
-                _generatedBlocks.Remove(firstBlock.Key);
-                Destroy(firstBlock.Value.gameObject);
-            }
+            _generatedBlocks.Remove(firstBlock.Key);
+            Destroy(firstBlock.Value.gameObject);
         }
     }
 

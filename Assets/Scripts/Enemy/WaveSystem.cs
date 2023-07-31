@@ -112,7 +112,7 @@ public class WaveSystem : MonoBehaviour
         enemiesTotalDefeated++;
         currentEnemiesCount--;
 
-        UIContainer.Instance.emeniesDefeatedText.text = "Enemies defeated: " + enemiesTotalDefeated;
+        UIContainer.Instance.emeniesDefeatedText.text = "Defeated: " + enemiesTotalDefeated;
 
         if (enemiesDefeated == enemyToSpawn)
         {
