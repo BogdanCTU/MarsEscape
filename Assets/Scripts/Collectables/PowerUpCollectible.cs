@@ -95,27 +95,27 @@ public class PowerUpCollectible : MonoBehaviour
         {
             case 0:
                 {
-                    playerController.DamageBoost(_boost);
+                    playerController.PlayerDamageBoost(_boost);
                     break;
                 }
             case 1:
                 {
-                    playerController.SpeedBoost(_boost);
+                    playerController.PlayerSpeedBoost(_boost);
                     break;
                 }
             case 2:
                 {
-                    playerController.LifeBoost(_boost);
+                    playerController.PlayerLifeBoost(_boost);
                     break;
                 }
             case 3:
                 {
-                    playerController.LifeRegen(_boost);
+                    playerController.PlayerLifeRegeneration(_boost);
                     break;
                 }
             default:
                 {
-                    playerController.DamageBoost(_boost);
+                    playerController.PlayerDamageBoost(_boost);
                     break;
                 }
         }

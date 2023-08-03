@@ -7,6 +7,7 @@ public class ProjectilePlayer : MonoBehaviour
 
     #region Fields
 
+    [Header("Stats:")]
     [SerializeField] private int _damageAmount = 50;
     [SerializeField] private int _speed = 2;
     [SerializeField] private WaitForSeconds _lifetime = new WaitForSeconds(10);
@@ -27,11 +28,12 @@ public class ProjectilePlayer : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Check if the projectile collided with an enemy or another object that can take damage.
+        // Check if the projectile collided with an enemy or another object that can take damage
         Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the enemy script.
+            // Call the TakeDamage function on the enemy script
+            enemy.TakeDamage(PlayerController.instance.GetDamage);   
             StopAllCoroutines();
             gameObject.SetActive(false);
         }
@@ -39,7 +41,8 @@ public class ProjectilePlayer : MonoBehaviour
         Obstacle obstacle = other.GetComponent<Obstacle>();
         if (obstacle != null)
         {
-            obstacle.TakeDamage(PlayerController.instance.damage); // Call the TakeDamage function on the object script.
+            // Call the TakeDamage function on the object script
+            obstacle.TakeDamage(PlayerController.instance.GetDamage);   
             StopAllCoroutines();
             gameObject.SetActive(false);
         }
@@ -59,25 +62,11 @@ public class ProjectilePlayer : MonoBehaviour
 
     #region Getters/Setters
 
-    public void SetDamageAmount(int damage)
-    {
-        _damageAmount = damage;
-    }
+    public int GetDamageAmount { get => _damageAmount; }
+    public int SetDamageAmount { set => _damageAmount = value; }
 
-    public int GetDamageAmount()
-    {
-        return _damageAmount;
-    }
-
-    public void SetSpeed(int speed)
-    {
-        _speed = speed;
-    }
-
-    public int GetSpeed()
-    {
-        return _speed;
-    }
+    public int GetSpeed { get => _speed; }
+    public int SetSpeed { set => _speed = value; }
 
     #endregion Getters/Setters
 

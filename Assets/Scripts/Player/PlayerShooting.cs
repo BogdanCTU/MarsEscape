@@ -20,6 +20,7 @@ public class PlayerShooting : MonoBehaviour
 
     [SerializeField] private ObjectPoolingMultiple _objectPoolingMultiple;
 
+    // Main Camera
     private Camera mainCamera;
 
     #endregion Fields
@@ -39,14 +40,14 @@ public class PlayerShooting : MonoBehaviour
         // Adding Projectile damage on Player Stats
         ProjectilePlayer playerProjectile = GetCurrentPlayerProjectile();
         if (playerProjectile != null)
-            PlayerController.instance.DamageBoost(playerProjectile.GetDamageAmount());
+            PlayerController.instance.PlayerDamageBoost(playerProjectile.GetDamageAmount);
     }
 
     void FixedUpdate()
     {
         RotateProjectileHolder();
 
-        // Shooting projectile on spacebar press and when cooldown is over.
+        // Shooting projectile on spacebar press and when cooldown is over
         if (_canShoot == true && Input.GetKey(KeyCode.Mouse0))
         {
             ShootProjectile();
@@ -64,32 +65,32 @@ public class PlayerShooting : MonoBehaviour
     {
         SoundManager.instance.LaserSound();
 
-        // Spawn the projectile at the player's position and rotation.
+        // Spawn the projectile at the player's position and rotation
         GameObject newProjectile = _objectPoolingMultiple.SpawnAndGetObject(_objectPoolingMultiple._itemsToPool[_currentProjectile].objectTag);
         newProjectile.transform.position = _projectilesSpawnPos.transform.position;
         newProjectile.transform.rotation = _projectilesSpawnPos.transform.rotation;
 
-        // Set the projectile's initial velocity in the direction the spawner is looking (towards the mouse).
+        // Set the projectile's initial velocity in the direction the spawner is looking (towards the mouse)
         ProjectilePlayer projectile = newProjectile.GetComponent<ProjectilePlayer>();
-        newProjectile.GetComponent<Rigidbody>().velocity = _projectilesSpawnPos.forward * projectile.GetSpeed();
+        newProjectile.GetComponent<Rigidbody>().velocity = _projectilesSpawnPos.forward * projectile.GetSpeed;
     }
 
     void RotateProjectileHolder()
     {
-        // Get the mouse position in screen space.
+        // Get the mouse position in screen space
         Vector3 mousePosition = Input.mousePosition;
 
-        // Convert the mouse position to world space.
+        // Convert the mouse position to world space
         mousePosition = mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, mainCamera.transform.position.y));
 
-        // Calculate the direction from the player to the mouse position.
+        // Calculate the direction from the player to the mouse position
         Vector3 directionToMouse = mousePosition - transform.position;
-        directionToMouse.y = 0f; // Keep the rotation in the XZ plane.
+        directionToMouse.y = 0f;   // Keep the rotation in the XZ plane
 
-        // Calculate the rotation angle around the y-axis.
+        // Calculate the rotation angle around the y-axis
         float angle = Mathf.Atan2(directionToMouse.x, directionToMouse.z) * Mathf.Rad2Deg;
 
-        // Rotate the projectile spawner around the y-axis to look at the mouse position.
+        // Rotate the projectile spawner around the y-axis to look at the mouse position
         _projectilesSpawnHolder.rotation = Quaternion.Euler(0f, angle, 0f);
     }
 
@@ -98,27 +99,22 @@ public class PlayerShooting : MonoBehaviour
         _canShoot = true;
     }
 
-    #region Getters/Setters
+    #region Get/Set
 
-    public void SetCurrentProjectile(int projectile)
-    {
-        _currentProjectile = projectile;
-    }
+    public int GetCurrentProjectile { get => _currentProjectile; }
+    public int SetCurrentProjectile { set => _currentProjectile = value; }
 
-    public int GetCurrentProjectile()
-    {
-        return _currentProjectile;
-    }
+    public Transform GetProjectilesSpawnPos { get => _projectilesSpawnPos; }
+    public Transform SetProjectilesSpawnPos { set => _projectilesSpawnPos = value; }
 
-    public void SetShootCooldown(float shootCooldown)
-    {
-        _shootCooldown = shootCooldown;
-    }
+    public Transform GetProjectilesSpawnHolder { get => _projectilesSpawnHolder; }
+    public Transform SetProjectilesSpawnHolder { set => _projectilesSpawnHolder = value; }
 
-    public float GetShootCooldown()
-    {
-        return _shootCooldown;
-    }
+    public float GetShootCooldown { get => _shootCooldown; }
+    public float SetShootCooldown { set => _shootCooldown = value; }
+
+    public bool GetCanShoot { get => _canShoot; }
+    public bool SetCanShoot { set => _canShoot = value; }
 
     public ProjectilePlayer GetCurrentPlayerProjectile()
     {
@@ -127,7 +123,7 @@ public class PlayerShooting : MonoBehaviour
         return null;
     }
 
-    #endregion Getters/Setters
+    #endregion Get/Set
 
     #endregion Methods
 

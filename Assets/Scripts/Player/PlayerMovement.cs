@@ -11,29 +11,25 @@ public class PlayerMovement : MonoBehaviour
     #region Fields
 
     [Header("Player Stats:")]
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] float _rotationSpeed;
+    [SerializeField] private float _speed;
+    [SerializeField] private float _rotationSpeed;
 
     [Space]
-    [Header("Player Components:")]
-    [SerializeField] Rigidbody _rigidbody;
-    [SerializeField] ParticleSystem _engineParticles;
+    [Header("Other Components:")]
+    [SerializeField] private ParticleSystem _engineParticles;
+
+    // Player Components
+    private Rigidbody _rigidbody;
 
     // Movement Variables
-    private Vector3 movement = Vector3.zero;
-    private Vector3 moveDirection = Vector3.zero;
-    private Quaternion targetRotation;
-    private float zMovement, xMovement;
+    private Vector3 _movement = Vector3.zero;
+    private Vector3 _moveDirection = Vector3.zero;
+    private Quaternion _targetRotation;
+    private float _zMovement, _xMovement;
 
     #endregion Fields
 
     #region Mono
-
-    private void Start()
-    {
-        // Disable rotation from physics forces
-        _rigidbody.freezeRotation = true;
-    }
 
     void FixedUpdate()
     {
@@ -46,64 +42,43 @@ public class PlayerMovement : MonoBehaviour
 
     private void PlayerMove()
     {
-        // Get the input from the W, S, A, and D keys.
-        zMovement = Input.GetAxis("Vertical"); // W/S or Up/Down arrow keys
-        xMovement = Input.GetAxis("Horizontal"); // A/D or Left/Right arrow keys
+        // Get the input from the W, S, A, and D keys
+        _zMovement = Input.GetAxis("Vertical");
+        _xMovement = Input.GetAxis("Horizontal");
 
-        // Calculate the movement direction.
-        moveDirection.Set(xMovement, 0f, zMovement);
+        // Calculate the movement direction
+        _moveDirection.Set(_xMovement, 0f, _zMovement);
 
-        // Normalize the movement direction so diagonal movement isn't faster.
-        moveDirection.Normalize();
+        // Normalize the movement direction so diagonal movement isn't faster
+        _moveDirection.Normalize();
 
-        // Rotate the player based on the movement direction.
-        if (moveDirection != Vector3.zero)
+        // Rotate the player based on the movement direction
+        if (_moveDirection != Vector3.zero)
         {
-            targetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
+            _targetRotation = Quaternion.LookRotation(_moveDirection, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, _targetRotation, _rotationSpeed * Time.deltaTime);
             if (!_engineParticles.isPlaying) _engineParticles.Play();
         }
         else if (_engineParticles.isPlaying)
             _engineParticles.Stop();
 
-        // Move the player based on the calculated direction and the move speed.
-        movement = moveDirection * _moveSpeed * Time.deltaTime;
-        _rigidbody.velocity = new Vector3(movement.x, _rigidbody.velocity.y, movement.z);
+        // Move the player based on the calculated direction and the move speed
+        _movement = _moveDirection * _speed * Time.deltaTime;
+        _rigidbody.velocity = new Vector3(_movement.x, _rigidbody.velocity.y, _movement.z);
     }
 
-    #region Getters/Setters
+    #region Get/Set
 
-    public void SetMovementSpeed(float speed)
-    {
-        _moveSpeed = speed;
-    }
+    public float GetSpeed { get => _speed; }
+    public float SetSpeed { set => _speed = value; }
 
-    public void SetRotationSpeed(float speed)
-    {
-        _rotationSpeed = speed;
-    }
+    public float GetRotationSpeed { get => _rotationSpeed; }
+    public float SetRotationSpeed { set => _rotationSpeed = value; }
 
-    public void SetRigidbody(Rigidbody rigidbody)
-    {
-        _rigidbody = rigidbody;
-    }
+    public Rigidbody GetRigidbody { get => _rigidbody; }
+    public Rigidbody SetRigidbody { set => _rigidbody = value; }
 
-    public void SetEngineParticles(ParticleSystem particle)
-    {
-        _engineParticles = particle;
-    }
-
-    public float GetMovementSpeed()
-    {
-        return _moveSpeed;
-    }
-
-    public float GetRotationSpeed()
-    {
-        return _rotationSpeed;
-    }
-
-    #endregion Getters/Setters
+    #endregion Get/Set
 
     #endregion Methods
 

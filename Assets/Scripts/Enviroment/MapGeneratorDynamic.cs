@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.AI;
 using Unity.AI.Navigation;
 using System.Linq;
 
@@ -16,6 +15,7 @@ public class MapGeneratorDynamic : MonoBehaviour
     #region Fields
 
     [Header("Prefabs:")]
+    [SerializeField] private GameObject firstBlock;
     [SerializeField] private List<GameObject> _blockPrefabs;
     [SerializeField] private Transform _blockContainer;
     [SerializeField] private Transform _player;
@@ -25,10 +25,12 @@ public class MapGeneratorDynamic : MonoBehaviour
     [SerializeField] private int _initialMapSize = 3;
     [SerializeField] private int _blockSpacing = 7;
     [SerializeField] private int _currentBlocks = 1;
-    [SerializeField] private int _maxGeneratedBlocks = 30;
+    [SerializeField] private int _maxGeneratedBlocks = 50;
 
-    private Dictionary<Vector2Int, GameObject> _generatedBlocks = new Dictionary<Vector2Int, GameObject>();
-    private Vector2Int _currentPlayerBlock;
+    [SerializeField] private List<GameObject> _generatedBlocks = new List<GameObject>();
+    [SerializeField] private List<Vector2Int> _generatedBlocksPositions = new List<Vector2Int>();
+    [SerializeField] private Vector2Int _currentPlayerBlock;
+    
 
     #endregion Fields
 
@@ -38,7 +40,8 @@ public class MapGeneratorDynamic : MonoBehaviour
     {
         _currentPlayerBlock = WorldToBlockCoordinates(_player.position);
 
-        _generatedBlocks.Add(Vector2Int.zero, null);
+        _generatedBlocks.Add(firstBlock);
+        _generatedBlocksPositions.Add(Vector2Int.zero);
 
         GenerateNewBlocksAroundPlayer();
     }
@@ -73,11 +76,14 @@ public class MapGeneratorDynamic : MonoBehaviour
                     Vector2Int blockPos = _currentPlayerBlock + new Vector2Int(x, y);
 
                     // Check if the distance between the current block and the new block is greater than or equal to blockSpacing
-                    if (!_generatedBlocks.ContainsKey(blockPos) && Vector2Int.Distance(blockPos, _currentPlayerBlock) >= _blockSpacing)
+                    if (!_generatedBlocksPositions.Contains(blockPos) && Vector2Int.Distance(blockPos, _currentPlayerBlock) >= _blockSpacing)
                     {
-                        GenerateBlock(blockPos);
+                        // Check how many blocks was generated
                         CheckBlocksCount();
 
+                        GenerateBlock(blockPos);
+
+                        // Refresh Navmesh including new generated blocks
                         _navMeshSurface.BuildNavMesh();
                     }
                 }
@@ -88,7 +94,8 @@ public class MapGeneratorDynamic : MonoBehaviour
     void GenerateBlock(Vector2Int position)
     {
         GameObject block = Instantiate(_blockPrefabs[Random.Range(0, _blockPrefabs.Count)], BlockToWorldCoordinates(position), Quaternion.identity, _blockContainer);
-        _generatedBlocks.Add(position, block);
+        _generatedBlocks.Add(block);
+        _generatedBlocksPositions.Add(position);
     }
 
     Vector2Int WorldToBlockCoordinates(Vector3 worldPosition)
@@ -108,14 +115,15 @@ public class MapGeneratorDynamic : MonoBehaviour
 
     private void CheckBlocksCount()
     {
-        _currentBlocks++;
-        if (_currentBlocks > _maxGeneratedBlocks)
+        if (_currentBlocks < _maxGeneratedBlocks)
+            _currentBlocks++;
+        else
         {
-            _currentBlocks--;
-
-            KeyValuePair<Vector2Int, GameObject> firstBlock = _generatedBlocks.FirstOrDefault();
-            _generatedBlocks.Remove(firstBlock.Key);
-            Destroy(firstBlock.Value.gameObject);
+            // Destroy the first pair
+            GameObject firstBlock = _generatedBlocks.First();
+            _generatedBlocks.Remove(firstBlock);
+            Destroy(firstBlock);
+            _generatedBlocksPositions.Remove(_generatedBlocksPositions.First());
         }
     }
 

@@ -5,7 +5,10 @@ using UnityEngine;
 /// A simple script that controls player stats
 /// </summary>
 
-[RequireComponent(typeof(PlayerMovement)), RequireComponent(typeof(Rigidbody)), RequireComponent(typeof(PlayerShooting))]
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(PlayerShooting))]
+[RequireComponent(typeof(PlayerShooting))]
 public class PlayerController : MonoBehaviour
 {
 
@@ -13,16 +16,22 @@ public class PlayerController : MonoBehaviour
 
     public static PlayerController instance;
 
+    [Header("Player Scriptable:")]
+    [SerializeField] private EntityStats _playerStats;
+
     [Space]
     [Header("Required Components:")]
     [SerializeField] private PlayerMovement _playerMovement;
     [SerializeField] private PlayerShooting _plyerShooting;
+    [SerializeField] private Rigidbody _rigidbody;
 
     [Space]
     [Header("Player Stats:")]
-    public int damage = 0;
-    public int life = 100;
-    public int maxLife = 100;
+    [SerializeField] private int _damage;
+    [SerializeField] private int _health;
+    [SerializeField] private int _maxhealth;
+    [SerializeField] private int _speed;
+    [SerializeField] private int _rotationSpeed;
 
     #endregion Fields
 
@@ -32,19 +41,35 @@ public class PlayerController : MonoBehaviour
     {
         if (instance == null)
             instance = this;
+
+        SetPlayerStats();
     }
 
     #endregion Mono
 
     #region Methods
 
+    private void SetPlayerStats()
+    {
+        // Player Stats
+        _health = _playerStats.GetHealth;
+        _maxhealth = _playerStats.GetHealth;
+        _damage = _playerStats.GetDamage;
+        _speed = _playerStats.GetSpeed;
+
+        // Player Movement
+        _playerMovement.SetSpeed = _speed;
+        _playerMovement.SetRigidbody = _rigidbody;
+        _playerMovement.SetRotationSpeed = _rotationSpeed;
+    }
+
     #region PowerUps
 
     public void DamagePlayer(int damage)
     {
-        life -= damage;
+        _health -= damage;
 
-        if (life <= 0)
+        if (_health <= 0)
         {
             Destroy(this.gameObject);
             ShowEndScreen();
@@ -52,37 +77,37 @@ public class PlayerController : MonoBehaviour
         }
 
         // Refresh UI
-        UIContainer.Instance.playerHealthText.text = "Health: " + life + "/" + maxLife;
+        UIContainer.Instance.playerHealthText.text = "Health: " + _health + "/" + _maxhealth;
     }
 
-    public void DamageBoost(int increase)
+    public void PlayerDamageBoost(int increase)
     {
-        damage += increase;
+        _damage += increase;
 
-        UIContainer.Instance.playerDamageText.text = "Damage: " + (damage);
+        UIContainer.Instance.playerDamageText.text = "Damage: " + (_damage);
     }
 
-    public void SpeedBoost(int increase)
+    public void PlayerSpeedBoost(int increase)
     {
-        _playerMovement.SetMovementSpeed(_playerMovement.GetMovementSpeed() + increase);
+        _playerMovement.SetSpeed = (_playerMovement.GetSpeed + increase);
     }
 
-    public void LifeBoost(int increase)
+    public void PlayerLifeBoost(int increase)
     {
-        maxLife += increase;
-        life += increase;
+        _maxhealth += increase;
+        _health += increase;
 
         // Refresh UI
-        UIContainer.Instance.playerHealthText.text = "Health: " + life + "/" + maxLife;
+        UIContainer.Instance.playerHealthText.text = "Health: " + _health + "/" + _maxhealth;
     }
 
-    public void LifeRegen(int increase)
+    public void PlayerLifeRegeneration(int increase)
     {
-        life += increase;
-        life = (life > maxLife) ? maxLife : life;
+        _health += increase;
+        _health = (_health > _maxhealth) ? _maxhealth : _health;
 
         // Refresh UI
-        UIContainer.Instance.playerHealthText.text = "Health: " + life + "/" + maxLife;
+        UIContainer.Instance.playerHealthText.text = "Health: " + _health + "/" + _maxhealth;
     }
 
     #endregion PowerUps
@@ -98,5 +123,19 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion Methods
+
+    #region Get/Set
+
+    public int GetDamage { get => _damage; }
+    public int GetHealth { get => _health; }
+    public int GetMaxhealth { get => _maxhealth; }
+    public int GetSpeed { get => _speed; }
+
+    public int SetDamage { set => _damage = value; }
+    public int SetHealth { set => _health = value; }
+    public int SetMaxhealth { set => _maxhealth = value; }
+    public int SetSpeed { set => _speed = value; }
+
+    #endregion Get/Set
 
 }
